@@ -5,6 +5,7 @@ import { runTask } from './commands/run.js';
 import { scrape } from './commands/scrape.js';
 import { capabilities } from './commands/capabilities.js';
 import { doctor } from './commands/doctor.js';
+import { mcpInit } from './commands/mcp.js';
 
 const program = new Command();
 
@@ -58,6 +59,16 @@ program
   .command('doctor')
   .description('Diagnose connectivity and authentication issues')
   .action(() => doctor());
+
+// mcp
+const mcp = program.command('mcp').description('MCP server configuration helpers');
+
+mcp
+  .command('init')
+  .description('Auto-configure MCP for a client, or print a JSON snippet')
+  .option('--client <type>', 'claude | cursor | generic', 'generic')
+  .option('--json', 'Print JSON snippet instead of writing to the client config file')
+  .action((options: { client: string; json?: boolean }) => mcpInit(options));
 
 program.parseAsync(process.argv).catch((err: unknown) => {
   console.error(String(err));
