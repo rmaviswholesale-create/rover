@@ -9,4 +9,5 @@ packages:
   - "packages/sdk"
   - "packages/tsconfig"
   - "packages/roverbook"
+  - "packages/mcp-server"
   - "apps/*"
