@@ -1,0 +1,52 @@
+{
+  "name": "@rtrvr-ai/sdk",
+  "version": "3.0.0",
+  "license": "FSL-1.1-Apache-2.0",
+  "description": "Node.js SDK for the rtrvr.ai agent API",
+  "author": "RTRVR AI, INC. <support@rtrvr.ai>",
+  "homepage": "https://www.rtrvr.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtrvr-ai/rover.git",
+    "directory": "packages/sdk-node"
+  },
+  "bugs": {
+    "url": "https://github.com/rtrvr-ai/rover/issues"
+  },
+  "keywords": [
+    "rover",
+    "rtrvr",
+    "ai-agent",
+    "web-agent",
+    "automation",
+    "sdk"
+  ],
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.6.3"
+  }
+}

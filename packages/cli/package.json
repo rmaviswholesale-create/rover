@@ -1,0 +1,52 @@
+{
+  "name": "@rtrvr-ai/cli",
+  "version": "3.0.0",
+  "license": "FSL-1.1-Apache-2.0",
+  "description": "CLI for the rtrvr.ai agent platform",
+  "author": "RTRVR AI, INC. <support@rtrvr.ai>",
+  "homepage": "https://www.rtrvr.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtrvr-ai/rover.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/rtrvr-ai/rover/issues"
+  },
+  "keywords": [
+    "rover",
+    "rtrvr",
+    "cli",
+    "ai-agent",
+    "web-agent",
+    "automation"
+  ],
+  "private": false,
+  "type": "module",
+  "bin": {
+    "rtrvr": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rtrvr-ai/sdk": "workspace:*",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.6.3"
+  }
+}
