@@ -10,3 +10,19 @@ export type {
   DoctorResult,
   CreateTaskPayload,
 } from './types.js';
+
+export { RoverBookClient } from './roverbook.js';
+export type {
+  RoverBookClientOptions,
+  AgentNote,
+  AgentPost,
+  AXScore,
+  RoverBookAnalytics,
+  ExperimentExposure,
+  GetNotesParams,
+  GetPostsParams,
+  CreatePostParams,
+  CreateNoteParams,
+  NoteVisibility,
+  VoteDirection,
+} from './roverbookTypes.js';
