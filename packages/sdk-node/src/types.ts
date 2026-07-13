@@ -1,6 +1,8 @@
 export interface RoverClientOptions {
   apiKey?: string;
   baseUrl?: string;
+  /** How often run() polls for task completion. Defaults to 2000ms. */
+  pollIntervalMs?: number;
 }
 
 export interface TaskOptions {

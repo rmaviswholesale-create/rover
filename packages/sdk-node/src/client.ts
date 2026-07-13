@@ -1,3 +1,4 @@
+import { requestJson, sleep } from './http.js';
 import type {
   RoverClientOptions,
   TaskOptions,
@@ -9,13 +10,16 @@ import type {
   CreateTaskPayload,
 } from './types.js';
 
+export { RoverAPIError } from './http.js';
+
 const DEFAULT_BASE_URL = 'https://agent.rtrvr.ai';
-const POLL_INTERVAL_MS = 2000;
+const DEFAULT_POLL_INTERVAL_MS = 2000;
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 export class RoverClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
+  private readonly pollIntervalMs: number;
 
   constructor(options: RoverClientOptions = {}) {
     const apiKey = options.apiKey ?? process.env['RTRVR_API_KEY'];
@@ -26,36 +30,20 @@ export class RoverClient {
     }
     this.apiKey = apiKey;
     this.baseUrl = (options.baseUrl ?? process.env['RTRVR_BASE_URL'] ?? DEFAULT_BASE_URL).replace(/\/$/, '');
+    this.pollIntervalMs = options.pollIntervalMs ?? DEFAULT_POLL_INTERVAL_MS;
   }
 
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: unknown,
-  ): Promise<T> {
-    const url = `${this.baseUrl}${path}`;
-    const res = await fetch(url, {
+  private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
+    const result = await requestJson<T>({
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-        'User-Agent': '@rtrvr-ai/sdk/3.0.0',
-      },
-      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      url: `${this.baseUrl}${path}`,
+      apiKey: this.apiKey,
+      body,
     });
-
-    if (!res.ok) {
-      let message = `HTTP ${res.status} ${res.statusText}`;
-      try {
-        const err = (await res.json()) as { message?: string; error?: string };
-        message = err.message ?? err.error ?? message;
-      } catch {
-        // ignore parse error
-      }
-      throw new RoverAPIError(message, res.status);
+    if (result === null) {
+      throw new Error(`Empty response from ${path}`);
     }
-
-    return res.json() as Promise<T>;
+    return result;
   }
 
   async createTask(payload: CreateTaskPayload): Promise<TaskResult> {
@@ -75,7 +63,7 @@ export class RoverClient {
       if (Date.now() >= deadline) {
         throw new Error(`Task ${current.id} timed out after waiting for completion.`);
       }
-      await sleep(POLL_INTERVAL_MS);
+      await sleep(this.pollIntervalMs);
       current = await this.getTask(current.id);
     }
 
@@ -93,18 +81,4 @@ export class RoverClient {
   async doctor(): Promise<DoctorResult> {
     return this.request<DoctorResult>('GET', '/v1/doctor');
   }
-}
-
-export class RoverAPIError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-  ) {
-    super(message);
-    this.name = 'RoverAPIError';
-  }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

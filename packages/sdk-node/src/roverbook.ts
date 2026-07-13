@@ -1,4 +1,4 @@
-import { RoverAPIError } from './client.js';
+import { requestJson } from './http.js';
 import type {
   RoverBookClientOptions,
   AgentNote,
@@ -53,31 +53,12 @@ export class RoverBookClient {
   }
 
   private async request<T>(method: string, path: string, body?: unknown): Promise<T | null> {
-    const res = await fetch(`${this.baseUrl}${path}`, {
+    return requestJson<T>({
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-        'User-Agent': '@rtrvr-ai/sdk/3.0.0',
-      },
-      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      url: `${this.baseUrl}${path}`,
+      apiKey: this.apiKey,
+      body,
     });
-
-    if (!res.ok) {
-      let message = `HTTP ${res.status} ${res.statusText}`;
-      try {
-        const err = (await res.json()) as { message?: string; error?: string };
-        message = err.message ?? err.error ?? message;
-      } catch {
-        // ignore parse error
-      }
-      throw new RoverAPIError(message, res.status);
-    }
-
-    if (res.status === 204) return null;
-    const text = await res.text();
-    if (!text) return null;
-    return JSON.parse(text) as T;
   }
 
   private async getData<T>(path: string, params: Record<string, unknown>): Promise<T | null> {

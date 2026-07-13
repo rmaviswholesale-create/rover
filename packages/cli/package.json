@@ -39,7 +39,8 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "pnpm run build && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@rtrvr-ai/sdk": "workspace:*",
