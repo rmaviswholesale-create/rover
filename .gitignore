@@ -81,5 +81,8 @@ functions/node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
+# Node.js compile cache
+node-compile-cache/
+
 # Internal notes
 internal*
